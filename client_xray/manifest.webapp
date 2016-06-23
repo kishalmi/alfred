@@ -1,0 +1,8 @@
+{
+  "name": "xray",
+  "description": "cross relay",
+  "icons": {
+    "128": "img/qupik_logo_Q.png"
+  },
+  "fullscreen": true
+}

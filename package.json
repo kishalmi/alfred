@@ -1,0 +1,22 @@
+{
+  "name": "alfred",
+  "version": "1.0.0",
+  "description": "watches a folder and serves it (locally)",
+  "main": "alfred.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lmg@kishalmi.net",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "cheerio": "^0.20.0",
+    "chokidar": "^1.5.2",
+    "express": "^4.14.0",
+    "express-interceptor": "^1.2.0",
+    "serve-index": "^1.8.0",
+    "socket.io": "^1.4.6",
+    "socket.io-client": "^1.4.6",
+    "uglify-js": "^2.6.2"
+  }
+}

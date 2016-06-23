@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <title>rc 1</title>
+
+    <link rel="stylesheet" href="css/common.css"/>
+    <style>
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        ul#buttons li {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 2px;
+            margin-bottom: 2px;
+            cursor: pointer;
+        }
+
+        ul#buttons li.active {
+            background: lightskyblue;
+        }
+
+        ul#buttons li img {
+            width: auto;
+            height: 32px;
+            margin-right: 8px;
+        }
+
+        ul#buttons li span {
+            font-size: 32px;
+        }
+    </style>
+</head>
+<body>
+<h1>rc 1</h1>
+<div>
+    <span>fade to</span>
+    <input id="btnFadeLogo" type="button" value="logo"/>
+    <input id="btnFadeScene" type="button" value="scene"/>
+    <ul id="buttons">
+        <li data-pano="330066"><img src="img/thumbs/cat.jpg"><span>cat stuff</span></li>
+        <li data-pano="663300"><img src="img/thumbs/cat.jpg"><span>other stuff</span></li>
+        <li data-pano="006633"><img src="img/thumbs/cat.jpg"><span>more stuff</span></li>
+    </ul>
+</div>
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script>
+    var ray = new Ray('c1');
+    ray.autoreload(true);
+
+    $('#btnFadeLogo').click(function () {
+        ray.cmd('FADE', {
+            val: 1
+        });
+    });
+    $('#btnFadeScene').click(function () {
+        ray.cmd('FADE', {
+            val: 0
+        });
+    });
+
+    // buttons
+    var ctxButtons = $('#buttons').find('li');
+
+    ctxButtons.each(function () {
+        var ctx = $(this).click(function () {
+            ctxButtons.removeClass('active');
+            var pano = ctx.data('pano');
+            console.log('switch to pano', pano, 'aktivate scroller');
+            ctx.addClass('active');
+            ray.cmd('PANO_SELECT', pano);
+        });
+    });
+</script>
+</body>
+</html>

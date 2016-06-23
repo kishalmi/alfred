@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xray fullscreen tests</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <meta name="apple-mobile-web-app-title" content="xray">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#FFFFFF">
+    <meta name="msapplication-navbutton-color" content="#FFFFFF">
+
+    <link rel="manifest" href="manifest.webapp">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .blur {
+            -webkit-filter: blur(4px);
+            -moz-filter: blur(4px);
+            -o-filter: blur(4px);
+            -ms-filter: blur(4px);
+            filter: blur(4px);
+        }
+
+        #content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #ovlStart {
+            display: none;
+
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: all;
+        }
+
+        #btnStart {
+            width: 200px;
+            height: 40px;
+            line-height: 32px;
+            white-space: nowrap;
+            background: lightblue url(img/fullscreen-128.png) no-repeat 12px center;
+            background-size: 12px 12px;
+            border-radius: 4px;
+            padding: 4px 8px 4px 32px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+<iframe id="content" class="blur" src="http://www.faz.net/"></iframe>
+<div id="ovlStart">
+    <div id="btnStart">BAM, FULLSCЯEEN!</div>
+</div>
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/screenfull/dist/screenfull.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/common.js"></script>
+<script>
+
+    var ray = new Ray('c1');
+    ray.on('connect', function () {
+        var ctxContent = $('#content');
+        var ctxOverlay = $('#ovlStart');
+        var ctxButton = $('#btnStart');
+
+        //contentNav("http://www.kishalmi.net/lab");
+
+
+        if (screenfull.enabled) {
+            toggleOverlay(!screenfull.isFullscreen);
+
+            // enter FS (hide button) on click
+            ctxButton.click(function() {
+                screenfull.request();
+                //contentNav("http://threejs.org/examples/webgl_effects_stereo.html");
+                contentNav("http://threejs.org/examples/misc_controls_deviceorientation.html");
+            });
+
+            // re-show button on leaving fullscreen:
+            document.addEventListener(screenfull.raw.fullscreenchange, function () {
+                toggleOverlay(!screenfull.isFullscreen);
+            });
+        }
+
+        function toggleOverlay(isVisible) {
+            ctxContent.toggleClass('blur', isVisible);
+            ctxOverlay.toggle(isVisible);
+            //ctxButton.toggle(isVisible);
+        }
+
+        function contentNav(url) {
+            ctxContent.attr('src', url);
+        }
+    });
+
+</script>
+</body>
+</html>
