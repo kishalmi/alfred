@@ -18,11 +18,11 @@ var chokidar = require('chokidar');
 
 // parse arguments
 var args = process.argv.slice(2);
-if (!args[0]) {
-    console.log('specify HTDOCS root dir as arguments!');
-    process.exit(1);
+
+var dir = process.cwd();
+if (args[0]) {
+    dir = path.resolve(dir, args[0]);
 }
-var dir = path.resolve(__dirname, args[0]);
 
 var port = 8888;
 if (args[1]) {
