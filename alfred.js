@@ -15,18 +15,17 @@ var cheerio = require('cheerio');
 var interceptor = require('express-interceptor');
 var serveIndex = require('serve-index');
 var chokidar = require('chokidar');
+var argv = require('minimist')(process.argv.slice(2));
 
 // parse arguments
-var args = process.argv.slice(2);
-
 var dir = process.cwd();
-if (args[0]) {
-    dir = path.resolve(dir, args[0]);
+if (argv._.length) {
+    dir = path.resolve(dir, argv._[0]);
 }
 
 var port = 8888;
-if (args[1]) {
-    port = parseInt(args[1], 10);
+if (argv.p) {
+    port = parseInt(argv.p, 10);
 }
 
 // inject minified client side JS
@@ -55,6 +54,7 @@ app.use(express.static(dir));
 // app.get('/', function (req, res) {
 //     res.sendFile(path.resolve(dir, 'quad_view.html'));
 // });
+app.use('/favicon.ico', express.static('favicon.ico'));
 app.use('/', serveIndex(dir, {
     icons: true,
     filter: function (filename, index, files, dir) {
