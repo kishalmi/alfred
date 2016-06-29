@@ -28,6 +28,7 @@ if (argv.p) {
     port = parseInt(argv.p, 10);
 }
 
+
 // inject minified client side JS
 var clientSocket = fs.readFileSync(path.resolve(__dirname, 'node_modules/socket.io-client/socket.io.js'), 'utf8');
 var clientCommon = fs.readFileSync(path.resolve(__dirname, 'lib/inject.js'), 'utf8');
@@ -49,12 +50,11 @@ var scriptInterceptor = interceptor(function (req, res) {
 });
 app.use(scriptInterceptor);
 
-
 app.use(express.static(dir));
 // app.get('/', function (req, res) {
 //     res.sendFile(path.resolve(dir, 'quad_view.html'));
 // });
-app.use('/favicon.ico', express.static('favicon.ico'));
+app.use('/favicon.ico', express.static(path.resolve(__dirname, 'alfred.ico')));
 app.use('/', serveIndex(dir, {
     icons: true,
     filter: function (filename, index, files, dir) {
@@ -66,32 +66,8 @@ app.use('/', serveIndex(dir, {
 // handle websocket connections
 io.on('connection', function (socket) {
     console.log(' [socket] %s connected.', socket.id);
-
-    var channel = '';
-
-    if (socket.handshake.query.channel) {
-        channel = socket.handshake.query.channel;
-        console.log('   initially joined #%s.', channel);
-        socket.join(channel);
-    }
-
-    socket.on('JOIN', function (channel) {
-        console.log(' [socket] %s joined #%s.', socket.id, channel);
-        socket.join(channel);
-    });
-    socket.on('PART', function (channel) {
-        console.log(' [socket] %s left #%s.', socket.id, channel);
-        socket.leave(channel);
-    });
-
-    socket.on('CMD', function (data) {
-        var type = data.type;
-        delete data.type;
-        console.log('=> #' + channel, '[' + type + ']', data);
-        io.to(channel).emit(type, data); // broadcast to channel
-    });
     socket.on('disconnect', function () {
-        console.log('user disconnected');
+        console.log(' [socket] %s disconnected.', socket.id);
     });
 });
 
@@ -100,10 +76,9 @@ chokidar
     .watch(dir, {
         ignored: /[\/\\]\./
     })
-    .on('change', function (path) {
-        console.log('file changed:', path);
-        //io.emit('change', path);
-        io.to('autoreload').emit('reload');
+    .on('change', function (file) {
+        console.log('file changed:', file);
+        io.emit('reload', path.relative(dir, file));
     });
 
 // start
