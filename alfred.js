@@ -66,6 +66,9 @@ app.use('/', serveIndex(dir, {
 // handle websocket connections
 io.on('connection', function (socket) {
     console.log(' [socket] %s connected.', socket.id);
+    socket.on('log', function (msg) {
+        console.log(' [socket] %s %s', socket.id, msg);
+    });
     socket.on('disconnect', function () {
         console.log(' [socket] %s disconnected.', socket.id);
     });
