@@ -77,7 +77,11 @@ io.on('connection', function (socket) {
 // watch for changes and send reload events
 chokidar
     .watch(dir, {
-        ignored: /[\/\\]\./
+        ignored: [
+            /[\/\\]\./,
+            /bower_components/,
+            /node_modules/
+        ]
     })
     .on('change', function (file) {
         console.log('file changed:', file);
