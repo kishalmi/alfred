@@ -16,6 +16,7 @@ var interceptor = require('express-interceptor');
 var serveIndex = require('serve-index');
 var chokidar = require('chokidar');
 var argv = require('minimist')(process.argv.slice(2));
+var readline = require('readline');
 
 // parse arguments
 var dir = process.cwd();
@@ -92,3 +93,14 @@ chokidar
 http.listen(port, function () {
     console.log('serving "%s" at -> http://localhost:%s', dir, port);
 });
+
+
+var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+rl.on('line', function (input) {
+    if (input.toUpperCase() === 'RL')
+        io.emit('reload');
+});
+console.log('type RL for manual reload');
