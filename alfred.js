@@ -67,8 +67,10 @@ app.use('/', serveIndex(dir, {
 // handle websocket connections
 io.on('connection', function (socket) {
     console.log(' [socket] %s connected.', socket.id);
-    socket.on('log', function (msg) {
-        console.log(' [socket] %s %s', socket.id, msg);
+    socket.on('log', function () {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift('[socket] '+socket.id); // unshift returns new length!
+        console.log.apply(console, args);
     });
     socket.on('disconnect', function () {
         console.log(' [socket] %s disconnected.', socket.id);
