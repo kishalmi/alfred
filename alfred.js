@@ -43,18 +43,28 @@ var scriptInterceptor = interceptor(function (req, res) {
         },
         // appends minified script tag at the end of the response body
         intercept: function (body, send) {
-            var $document = cheerio.load(body);
-            $document('head').append('<script>' + injectScript + '</script>');
-            send($document.html());
+
+            if (/fs$/.test(req.originalUrl)) {
+                //if postfixed with ?fs we wrap content in an iframe to keep fullscreen
+                var htmlFrame = fs.readFileSync(path.resolve(__dirname, 'lib/frame.html'), 'utf8');
+                var $docFrame = cheerio.load(htmlFrame);
+                $docFrame('#mainframe').attr('src', req.url.replace(/(\W)fs/,''));
+                send($docFrame.html());
+            } else {
+                // inject script into body
+                var $document = cheerio.load(body);
+                $document('head').append('<script>' + injectScript + '</script>');
+                send($document.html());
+            }
         }
     };
 });
 app.use(scriptInterceptor);
-
-app.use(express.static(dir));
 // app.get('/', function (req, res) {
-//     res.sendFile(path.resolve(dir, 'quad_view.html'));
+//     console.log('/')
+//     //res.sendFile(path.resolve(dir, 'quad_view.html'));
 // });
+app.use(express.static(dir));
 app.use('/favicon.ico', express.static(path.resolve(__dirname, 'alfred.ico')));
 app.use('/', serveIndex(dir, {
     icons: true,
@@ -69,7 +79,7 @@ io.on('connection', function (socket) {
     console.log(' [socket] %s connected.', socket.id);
     socket.on('log', function () {
         var args = Array.prototype.slice.call(arguments);
-        args.unshift('[socket] '+socket.id); // unshift returns new length!
+        args.unshift('[socket] ' + socket.id); // unshift returns new length!
         console.log.apply(console, args);
     });
     socket.on('disconnect', function () {
@@ -97,12 +107,12 @@ http.listen(port, function () {
 });
 
 
-var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-rl.on('line', function (input) {
-    if (input.toUpperCase() === 'RL')
-        io.emit('reload');
-});
-console.log('type RL for manual reload');
+// var rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stderr
+// });
+// rl.on('line', function (input) {
+//     if (input.toUpperCase() === 'RL')
+//         io.emit('reload');
+// });
+// console.log('type RL for manual reload');
