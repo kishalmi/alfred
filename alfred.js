@@ -29,6 +29,10 @@ if (argv.p) {
     port = parseInt(argv.p, 10);
 }
 
+// jsonp /ping support (for discovery)
+app.get('/ping', function (req, res) {
+    res.jsonp({pong: Date.now()});
+});
 
 // inject minified client side JS
 var clientSocket = fs.readFileSync(path.resolve(__dirname, 'node_modules/socket.io-client/socket.io.js'), 'utf8');
@@ -48,7 +52,7 @@ var scriptInterceptor = interceptor(function (req, res) {
                 //if postfixed with ?fs we wrap content in an iframe to keep fullscreen
                 var htmlFrame = fs.readFileSync(path.resolve(__dirname, 'lib/frame.html'), 'utf8');
                 var $docFrame = cheerio.load(htmlFrame);
-                $docFrame('#mainframe').attr('src', req.url.replace(/(\W)fs/,''));
+                $docFrame('#mainframe').attr('src', req.url.replace(/(\W)fs/, ''));
                 send($docFrame.html());
             } else {
                 // inject script into body
