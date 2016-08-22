@@ -55,7 +55,7 @@ var scriptInterceptor = interceptor(function (req, res) {
                 $docFrame('#mainframe').attr('src', req.url.replace(/(\W)fs/, ''));
                 send($docFrame.html());
             } else {
-                // inject script into body
+                // inject script into end of head
                 var $document = cheerio.load(body);
                 $document('head').append('<script>' + injectScript + '</script>');
                 send($document.html());
