@@ -86,6 +86,23 @@ io.on('connection', function (socket) {
         args.unshift('[socket] ' + socket.id); // unshift returns new length!
         console.log.apply(console, args);
     });
+
+    var currentChannel;
+    socket.on('_JOIN_', function (channel) {
+        console.log(' [socket] %s JOINs %s.', socket.id, channel)
+        if (currentChannel)
+            socket.leave(currentChannel);
+        socket.join(channel);
+        currentChannel = channel;
+    });
+    socket.on('_SEND_', function (event, data) {
+        // console.log(' [socket] %s sending', event, data);
+        var target = socket.broadcast;
+        if (currentChannel)
+            target = target.to(currentChannel);
+        target.emit(event, data);
+    });
+
     socket.on('disconnect', function () {
         console.log(' [socket] %s disconnected.', socket.id);
     });
