@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for i in $(ls -d */); do
+	DIR=${i%%/};
+	if test -d $DIR/.git; then
+		echo "$DIR has git";
+		pushd "$DIR";
+		git pull;
+		popd;
+	fi
+done
