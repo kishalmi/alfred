@@ -89,7 +89,7 @@ io.on('connection', function (socket) {
 
     var currentChannel;
     socket.on('_JOIN_', function (channel) {
-        // console.log(' [socket] %s JOINs %s.', socket.id, channel);
+        console.log(' [socket] %s JOINs %s.', socket.id, channel);
         if (currentChannel)
             socket.leave(currentChannel);
         socket.join(channel);
