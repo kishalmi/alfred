@@ -123,9 +123,21 @@ chokidar
     });
 
 // start
-http.listen(port, function () {
+function startServer() {
+    http.listen(port);
+}
+http.on('listening', function () {
     console.log('serving "%s" at -> http://localhost:%s', dir, port);
 });
+http.on('error', function (e) {
+    if (e.code == 'EADDRINUSE') {
+        console.log('ERROR address in use. trying port %s', ++port);
+        startServer();
+    }
+});
+
+console.log('starting server..');
+startServer();
 
 
 // var rl = readline.createInterface({
