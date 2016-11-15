@@ -114,7 +114,8 @@ chokidar
         ignored: [
             /[\/\\]\./,
             /bower_components/,
-            /node_modules/
+            /node_modules/,
+	    /\.less$/
         ]
     })
     .on('change', function (file) {
