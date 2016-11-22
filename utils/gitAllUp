@@ -6,6 +6,9 @@ for i in $(ls -d */); do
 		echo "$DIR has git";
 		pushd "$DIR";
 		git pull --recurse-submodules;
+		git submodule update --init --recursive
+		git submodule foreach --recursive git fetch
+		git submodule foreach git merge origin master
 		popd;
 	fi
 done
