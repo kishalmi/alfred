@@ -19,7 +19,8 @@ var argv = require('minimist')(process.argv.slice(2));
 var readline = require('readline');
 
 // parse arguments
-var dir = process.cwd();
+
+var dir = process.cwd(); // if not otherwise specified, serve CWD
 if (argv._.length) {
     dir = path.resolve(dir, argv._[0]);
 }
@@ -27,6 +28,18 @@ if (argv._.length) {
 var port = 8888;
 if (argv.p) {
     port = parseInt(argv.p, 10);
+}
+
+var clientOptional = ''; // optionally injected JS
+if (argv.i) {
+    // NOTE: any command line supplied paths needs resolving from CWD
+    var absFileInject = path.resolve(process.cwd(), argv.i);
+    try {
+        clientOptional = fs.readFileSync(absFileInject, 'utf8');
+        console.log('injecting "%s"', absFileInject);
+    } catch (err) {
+        console.log('ERROR opening injection file %s "%s".', err.code, absFileInject);
+    }
 }
 
 // jsonp /ping support (for discovery)
@@ -37,7 +50,7 @@ app.get('/ping', function (req, res) {
 // inject minified client side JS
 var clientSocket = fs.readFileSync(path.resolve(__dirname, 'node_modules/socket.io-client/socket.io.js'), 'utf8');
 var clientCommon = fs.readFileSync(path.resolve(__dirname, 'lib/inject.js'), 'utf8');
-var injectScript = uglify.minify(clientSocket + clientCommon, {fromString: true}).code;
+var injectScript = uglify.minify(clientSocket + clientCommon + clientOptional, {fromString: true}).code;
 
 var scriptInterceptor = interceptor(function (req, res) {
     return {
@@ -115,7 +128,7 @@ chokidar
             /[\/\\]\./,
             /bower_components/,
             /node_modules/,
-	    /\.less$/
+            /\.less$/
         ]
     })
     .on('change', function (file) {
