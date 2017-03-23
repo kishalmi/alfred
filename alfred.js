@@ -122,7 +122,7 @@ io.on('connection', function (socket) {
 });
 
 // watch for changes and send reload events
-if (argv.s) {
+if (!argv.s) {
     chokidar
         .watch(dir, {
             ignored: [
