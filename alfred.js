@@ -122,19 +122,23 @@ io.on('connection', function (socket) {
 });
 
 // watch for changes and send reload events
-chokidar
-    .watch(dir, {
-        ignored: [
-            /[\/\\]\./,
-            /bower_components/,
-            /node_modules/,
-            /\.less$/
-        ]
-    })
-    .on('change', function (file) {
-        console.log('file changed:', file);
-        io.emit('reload', path.relative(dir, file));
-    });
+if (argv.p) {
+    chokidar
+        .watch(dir, {
+            ignored: [
+                /[\/\\]\./,
+                /bower_components/,
+                /node_modules/,
+                /\.less$/
+            ]
+        })
+        .on('change', function (file) {
+            console.log('file changed:', file);
+            io.emit('reload', path.relative(dir, file));
+        });
+} else {
+    console.log('static mode, not monitoring changes.');
+}
 
 // start
 function startServer() {
