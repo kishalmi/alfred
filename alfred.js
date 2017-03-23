@@ -48,7 +48,7 @@ app.get('/ping', function (req, res) {
 });
 
 // inject minified client side JS
-var clientSocket = fs.readFileSync(path.resolve(__dirname, 'node_modules/socket.io-client/socket.io.js'), 'utf8');
+var clientSocket = fs.readFileSync(path.resolve(__dirname, 'node_modules/socket.io-client/dist/socket.io.min.js'), 'utf8');
 var clientCommon = fs.readFileSync(path.resolve(__dirname, 'lib/inject.js'), 'utf8');
 var injectScript = uglify.minify(clientSocket + clientCommon + clientOptional, {fromString: true}).code;
 
