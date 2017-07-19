@@ -129,7 +129,8 @@ if (!argv.s) {
                 /[\/\\]\./,
                 /bower_components/,
                 /node_modules/,
-                /\.less$/
+                /\.less$/,
+                /\.ts$/
             ]
         })
         .on('change', function (file) {
