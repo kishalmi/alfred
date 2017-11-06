@@ -15,7 +15,7 @@ var cheerio = require('cheerio');
 var interceptor = require('express-interceptor');
 var serveIndex = require('serve-index');
 var chokidar = require('chokidar');
-var argv = require('minimist')(process.argv.slice(2));
+var argv = require('minimist')(process.argv.slice(2), {boolean: 'php'});
 var readline = require('readline');
 
 // parse arguments
@@ -77,10 +77,13 @@ var scriptInterceptor = interceptor(function (req, res) {
     };
 });
 app.use(scriptInterceptor);
-// app.get('/', function (req, res) {
-//     console.log('/')
-//     //res.sendFile(path.resolve(dir, 'quad_view.html'));
-// });
+
+// enable .php CGI
+if(argv.php) {
+  var php = require('express-php');
+  app.use(php.cgi(dir));
+}
+
 app.use(express.static(dir));
 app.use('/favicon.ico', express.static(path.resolve(__dirname, 'alfred.ico')));
 app.use('/', serveIndex(dir, {

@@ -1,5 +1,0 @@
-TODO:
-    * wake-log (handy nicht in standby? - Andi)
-    * fade to black (and back) on scene-changes
-    * fullscreen + hide mouse (tv)
-    * on reconnect && autoreload => refresh (careful, loop)
