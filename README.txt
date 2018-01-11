@@ -15,5 +15,9 @@ prerequisite:
  npm install express-php
  apt install php-cgi
 
-
 => go point your browser to http://localhost:8888
+
+
+to serve secure pages (e.g. for Storage API experiments)
+ ./alfred --ssl
+and use a secure URL: https://localhost:8888
