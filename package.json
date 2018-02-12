@@ -1,7 +1,7 @@
 {
   "name": "alfred",
-  "version": "1.0.0",
-  "description": "watches a folder and serves it (locally)",
+  "version": "1.2.0",
+  "description": "servers a directory, watches it for changes and automatically reloads",
   "main": "alfred.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
