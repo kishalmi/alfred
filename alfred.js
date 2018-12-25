@@ -152,6 +152,7 @@ if (!argv.s) {
         /[\/\\]\./,
         /bower_components/,
         /node_modules/,
+        /\.scss$/,
         /\.less$/,
         /\.ts$/
       ]
